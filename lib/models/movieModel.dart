@@ -1,31 +1,61 @@
+import 'package:courtclick_movie_app/core/constants/apiConstants.dart';
+
 class MovieModel {
-  final int id;
-  final String title;
-  final String overview;
-  final String? posterPath;
+  final bool adult;
   final String? backdropPath;
-  final String releaseDate;
+  final List<int> genreIds;
+  final int id;
+  final String? originalLanguage;
+  final String? originalTitle;
+  final String? overview;
+  final double popularity;
+  final String? posterPath;
+  final String? releaseDate;
+  final String? title;
   final double voteAverage;
+  final int voteCount;
+  final String? mediaType;
 
   MovieModel({
+    required this.adult,
+    required this.backdropPath,
+    required this.genreIds,
     required this.id,
-    required this.title,
+    required this.originalLanguage,
+    required this.originalTitle,
     required this.overview,
-    this.posterPath,
-    this.backdropPath,
+    required this.popularity,
+    required this.posterPath,
     required this.releaseDate,
+    required this.title,
     required this.voteAverage,
+    required this.voteCount,
+    required this.mediaType,
   });
 
   factory MovieModel.fromJson(Map<String, dynamic> json) {
     return MovieModel(
-      id: json['id'] ?? 0,
-      title: json['title'] ?? '',
-      overview: json['overview'] ?? '',
-      posterPath: json['poster_path'],
+      adult: json['adult'] ?? false,
       backdropPath: json['backdrop_path'],
-      releaseDate: json['release_date'] ?? '',
+      genreIds: List<int>.from(json['genre_ids'] ?? []),
+      id: json['id'] ?? 0,
+      originalLanguage: json['original_language'],
+      originalTitle: json['original_title'] ?? json['original_name'],
+      overview: json['overview'],
+      popularity: (json['popularity'] ?? 0).toDouble(),
+      posterPath: json['poster_path'],
+
+      // Movie uses release_date.
+      // TV uses first_air_date.
+      releaseDate: json['release_date'] ?? json['first_air_date'],
+
+      // Movie uses title.
+      // TV uses name.
+      title: json['title'] ?? json['name'],
+
       voteAverage: (json['vote_average'] ?? 0).toDouble(),
+      voteCount: json['vote_count'] ?? 0,
+      mediaType: json['media_type'],
     );
   }
 
@@ -34,7 +64,7 @@ class MovieModel {
       return null;
     }
 
-    return 'https://image.tmdb.org/t/p/w500$posterPath';
+    return '${ApiConstants.imageBaseUrl}$posterPath';
   }
 
   String? get backdropUrl {
@@ -42,6 +72,6 @@ class MovieModel {
       return null;
     }
 
-    return 'https://image.tmdb.org/t/p/w500$backdropPath';
+    return '${ApiConstants.imageBaseUrl}$backdropPath';
   }
 }
