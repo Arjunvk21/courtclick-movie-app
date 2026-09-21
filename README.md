@@ -1,17 +1,68 @@
-# courtclick_movie_app
+# CourtClick Movie App
 
-A new Flutter project.
+A Flutter movie application built for the CourtClick Flutter Developer Machine Test.
 
-## Getting Started
+The app is inspired by the Netflix-style movie browsing experience and uses the TMDB API for the movie-related screens.
 
-This project is a starting point for a Flutter application.
+## What is included
 
-A few resources to get you started if this is your first Flutter project:
+- Home/Dashboard with movie categories
+- Trending movies
+- Popular movies
+- Now Playing movies
+- Top Rated movies
+- Movie search
+- Search debounce
+- Coming Soon movies
+- Coming Soon pagination
+- Pull to refresh
+- Skeleton loading
+- Downloads screen
+- More screen
+- Profile screen
+- Reusable bottom navigation
+- TMDB image loading and caching
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## Tech used
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Flutter / Dart
+- BLoC for state management
+- Dio for API calls
+- TMDB API
+- cached_network_image
+- flutter_svg
+- shimmer
+- rxdart
+- equatable
+- get_it
+
+## Project structure
+
+The project is divided into a few main parts:
+
+```text
+lib/
+├── blocs/
+│   ├── dashboard/
+│   ├── search/
+│   └── comingSoon/
+│
+├── core/
+│   ├── constants/
+│   └── network/
+│
+├── customWidgets/
+│
+├── models/
+│
+├── repository/
+│
+├── screens/
+│   ├── dashboard/
+│   ├── search/
+│   ├── comingSoon/
+│   ├── downloads/
+│   ├── more/
+│   └── profile/
+│
+└── main.dart
