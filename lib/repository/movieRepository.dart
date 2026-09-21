@@ -1,101 +1,114 @@
 import 'package:courtclick_movie_app/core/constants/apiConstants.dart';
 import 'package:courtclick_movie_app/core/network/dioClient.dart';
 import 'package:courtclick_movie_app/models/movieModel.dart';
+import 'package:courtclick_movie_app/models/moviePageResponse.dart';
 
 class MovieRepository {
   final DioClient dioClient;
 
   MovieRepository({required this.dioClient});
 
-  Future<List<MovieModel>> getPopularMovies() async {
+  // ============================================================
+  // POPULAR
+  // ============================================================
+
+  Future<MoviePageResponse> getPopularMovies({int page = 1}) async {
     try {
       final response = await dioClient.dio.get(
         ApiConstants.popular,
-        queryParameters: {'api_key': ApiConstants.tmdbApiKey, 'page': 1},
+        queryParameters: {'api_key': ApiConstants.tmdbApiKey, 'page': page},
       );
 
-      final List results = response.data['results'] ?? [];
-
-      return results.map((movie) => MovieModel.fromJson(movie)).toList();
+      return MoviePageResponse.fromJson(response.data);
     } catch (e) {
       throw Exception('Failed to load popular movies');
     }
   }
 
-  Future<List<MovieModel>> getTrendingMovies() async {
+  // ============================================================
+  // TRENDING
+  // ============================================================
+
+  Future<MoviePageResponse> getTrendingMovies({int page = 1}) async {
     try {
       final response = await dioClient.dio.get(
         ApiConstants.trending,
-        queryParameters: {'api_key': ApiConstants.tmdbApiKey},
+        queryParameters: {'api_key': ApiConstants.tmdbApiKey, 'page': page},
       );
 
-      final List results = response.data['results'] ?? [];
-
-      return results.map((movie) => MovieModel.fromJson(movie)).toList();
+      return MoviePageResponse.fromJson(response.data);
     } catch (e) {
       throw Exception('Failed to load trending movies');
     }
   }
 
-  Future<List<MovieModel>> getNowPlayingMovies() async {
+  // ============================================================
+  // NOW PLAYING
+  // ============================================================
+
+  Future<MoviePageResponse> getNowPlayingMovies({int page = 1}) async {
     try {
       final response = await dioClient.dio.get(
         ApiConstants.nowPlaying,
-        queryParameters: {'api_key': ApiConstants.tmdbApiKey, 'page': 1},
+        queryParameters: {'api_key': ApiConstants.tmdbApiKey, 'page': page},
       );
 
-      final List results = response.data['results'] ?? [];
-
-      return results.map((movie) => MovieModel.fromJson(movie)).toList();
+      return MoviePageResponse.fromJson(response.data);
     } catch (e) {
       throw Exception('Failed to load now playing movies');
     }
   }
 
-  Future<List<MovieModel>> getTopRatedMovies() async {
+  // ============================================================
+  // TOP RATED
+  // ============================================================
+
+  Future<MoviePageResponse> getTopRatedMovies({int page = 1}) async {
     try {
       final response = await dioClient.dio.get(
         ApiConstants.topRated,
-        queryParameters: {'api_key': ApiConstants.tmdbApiKey, 'page': 1},
+        queryParameters: {'api_key': ApiConstants.tmdbApiKey, 'page': page},
       );
 
-      final List results = response.data['results'] ?? [];
-
-      return results.map((movie) => MovieModel.fromJson(movie)).toList();
+      return MoviePageResponse.fromJson(response.data);
     } catch (e) {
       throw Exception('Failed to load top rated movies');
     }
   }
 
-  Future<List<MovieModel>> getUpcomingMovies() async {
+  // ============================================================
+  // UPCOMING
+  // ============================================================
+
+  Future<MoviePageResponse> getUpcomingMovies({int page = 1}) async {
     try {
       final response = await dioClient.dio.get(
         ApiConstants.upcoming,
-        queryParameters: {'api_key': ApiConstants.tmdbApiKey, 'page': 1},
+        queryParameters: {'api_key': ApiConstants.tmdbApiKey, 'page': page},
       );
 
-      final List results = response.data['results'] ?? [];
-
-      return results.map((movie) => MovieModel.fromJson(movie)).toList();
+      return MoviePageResponse.fromJson(response.data);
     } catch (e) {
       throw Exception('Failed to load upcoming movies');
     }
   }
 
-  Future<List<MovieModel>> searchMovies(String query) async {
+  // ============================================================
+  // SEARCH
+  // ============================================================
+
+  Future<MoviePageResponse> searchMovies(String query, {int page = 1}) async {
     try {
       final response = await dioClient.dio.get(
         ApiConstants.searchMovie,
         queryParameters: {
           'api_key': ApiConstants.tmdbApiKey,
           'query': query,
-          'page': 1,
+          'page': page,
         },
       );
 
-      final List results = response.data['results'] ?? [];
-
-      return results.map((movie) => MovieModel.fromJson(movie)).toList();
+      return MoviePageResponse.fromJson(response.data);
     } catch (e) {
       throw Exception('Failed to search movies');
     }

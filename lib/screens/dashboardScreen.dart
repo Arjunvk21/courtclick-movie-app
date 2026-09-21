@@ -3,8 +3,10 @@ import 'package:courtclick_movie_app/blocs/dashboard/dashboardBloc.dart';
 import 'package:courtclick_movie_app/blocs/dashboard/dashboardEvent.dart';
 import 'package:courtclick_movie_app/blocs/dashboard/dashboardState.dart';
 import 'package:courtclick_movie_app/core/network/dioClient.dart';
+import 'package:courtclick_movie_app/customWidgets/customBottomNavBar.dart';
 import 'package:courtclick_movie_app/models/movieModel.dart';
 import 'package:courtclick_movie_app/repository/movieRepository.dart';
+import 'package:courtclick_movie_app/screens/searchScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -72,14 +74,7 @@ class _DashboardViewState extends State<DashboardView> {
         },
       ),
 
-      bottomNavigationBar: _BottomNavigation(
-        selectedIndex: selectedBottomIndex,
-        onChanged: (index) {
-          setState(() {
-            selectedBottomIndex = index;
-          });
-        },
-      ),
+      bottomNavigationBar: const CustomBottomNavigation(selectedIndex: 0),
     );
   }
 }
@@ -171,6 +166,10 @@ class _HomeContent extends StatelessWidget {
               movies: state.popularMovies,
               cardWidth: 100,
               cardHeight: 150,
+              isLoadingMore: state.isLoadingPopular,
+              onLoadMore: () {
+                context.read<DashboardBloc>().add(LoadMorePopular());
+              },
             ),
           ),
 
@@ -183,6 +182,10 @@ class _HomeContent extends StatelessWidget {
               movies: state.trendingMovies,
               cardWidth: 100,
               cardHeight: 150,
+              isLoadingMore: state.isLoadingTrending,
+              onLoadMore: () {
+                context.read<DashboardBloc>().add(LoadMoreTrending());
+              },
             ),
           ),
 
@@ -196,6 +199,10 @@ class _HomeContent extends StatelessWidget {
               cardWidth: 100,
               cardHeight: 150,
               showTop10: true,
+              isLoadingMore: state.isLoadingTopRated,
+              onLoadMore: () {
+                context.read<DashboardBloc>().add(LoadMoreTopRated());
+              },
             ),
           ),
 
@@ -220,6 +227,10 @@ class _HomeContent extends StatelessWidget {
               movies: state.nowPlayingMovies,
               cardWidth: 100,
               cardHeight: 150,
+              isLoadingMore: state.isLoadingNowPlaying,
+              onLoadMore: () {
+                context.read<DashboardBloc>().add(LoadMoreNowPlaying());
+              },
             ),
           ),
 
@@ -257,31 +268,33 @@ class HeroActions extends StatelessWidget {
                 color: const Color(0xFFC4C4C4),
                 borderRadius: BorderRadius.circular(5.63),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: Stack(
                 children: [
+                  // PLAY ICON
                   const Positioned(
-                    left: 17,
-                    top: 8,
+                    left: 7,
+                    top: 5,
                     child: Icon(
                       Icons.play_arrow,
                       color: Colors.black,
-                      size: 28,
+                      size: 36,
                     ),
                   ),
 
-                  const SizedBox(width: 7),
-
-                  // Play text
-                  const Text(
-                    'Play',
-                    style: TextStyle(
-                      fontFamily: 'SF Pro Display',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 20.46,
-                      height: 30 / 20.46,
-                      letterSpacing: -0.06,
-                      color: Colors.black,
+                  // PLAY TEXT
+                  const Positioned(
+                    left: 50,
+                    top: 7,
+                    child: Text(
+                      'Play',
+                      style: TextStyle(
+                        fontFamily: 'SF Pro Display',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 20.46,
+                        height: 30 / 20.46,
+                        letterSpacing: -0.06,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ],
@@ -653,6 +666,8 @@ class MovieSection extends StatelessWidget {
   final double cardWidth;
   final double cardHeight;
   final bool showTop10;
+  final bool isLoadingMore;
+  final VoidCallback onLoadMore;
 
   const MovieSection({
     super.key,
@@ -661,8 +676,10 @@ class MovieSection extends StatelessWidget {
     this.cardWidth = 100,
     this.cardHeight = 150,
     this.showTop10 = false,
+    this.isLoadingMore = false,
+    this.onLoadMore = _emptyCallback,
   });
-
+  static void _emptyCallback() {}
   @override
   Widget build(BuildContext context) {
     if (movies.isEmpty) {
@@ -688,20 +705,50 @@ class MovieSection extends StatelessWidget {
 
           SizedBox(
             height: cardHeight,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.only(left: 16),
-              physics: const BouncingScrollPhysics(),
-              itemCount: movies.length,
-              itemBuilder: (context, index) {
-                return MovieCard(
-                  movie: movies[index],
-                  width: cardWidth,
-                  height: cardHeight,
-                  showTop10: showTop10,
-                  rank: index + 1,
-                );
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (notification) {
+                if (notification is ScrollUpdateNotification ||
+                    notification is ScrollEndNotification) {
+                  final position = notification.metrics;
+
+                  if (position.pixels >= position.maxScrollExtent - 300) {
+                    onLoadMore();
+                  }
+                }
+
+                return false;
               },
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.only(left: 16),
+                physics: const BouncingScrollPhysics(),
+                itemCount: movies.length + (isLoadingMore ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (index >= movies.length) {
+                    return SizedBox(
+                      width: 50,
+                      child: Center(
+                        child: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+
+                  return MovieCard(
+                    movie: movies[index],
+                    width: cardWidth,
+                    height: cardHeight,
+                    showTop10: showTop10,
+                    rank: index + 1,
+                  );
+                },
+              ),
             ),
           ),
         ],
@@ -942,6 +989,118 @@ class _BottomItem extends StatelessWidget {
             style: TextStyle(
               color: selected ? Colors.white : const Color(0xFF777777),
               fontSize: 7,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class LastWatchedSection extends StatelessWidget {
+  final List<MovieModel> movies;
+
+  const LastWatchedSection({super.key, required this.movies});
+
+  @override
+  Widget build(BuildContext context) {
+    if (movies.isEmpty) {
+      return const SizedBox();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 6, bottom: 18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(left: 16, bottom: 8),
+            child: Text(
+              'Continue Watching for Emanalo',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+
+          SizedBox(
+            height: 147,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.only(left: 16),
+              physics: const BouncingScrollPhysics(),
+              itemCount: movies.length,
+              itemBuilder: (context, index) {
+                return LastWatchedCard(movie: movies[index]);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class LastWatchedCard extends StatelessWidget {
+  final MovieModel movie;
+
+  const LastWatchedCard({super.key, required this.movie});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 187,
+      height: 147,
+      margin: const EdgeInsets.only(right: 13),
+      decoration: BoxDecoration(
+        color: const Color(0xFF111111),
+        borderRadius: BorderRadius.circular(3),
+      ),
+      clipBehavior: Clip.hardEdge,
+      child: Column(
+        children: [
+          // =========================
+          // POSTER / IMAGE
+          // =========================
+
+          SizedBox(
+            width: 187,
+            height: 88,
+            child: movie.backdropUrl != null
+                ? CachedNetworkImage(
+                    imageUrl: movie.backdropUrl!,
+                    fit: BoxFit.cover,
+                    alignment: Alignment.center,
+                    errorWidget: (context, url, error) {
+                      return Container(color: const Color(0xFF202020));
+                    },
+                  )
+                : Container(color: const Color(0xFF202020)),
+          ),
+
+          // =========================
+          // BOTTOM ACTION AREA
+          // =========================
+          Expanded(
+            child: Container(
+              color: const Color(0xFF111111),
+              child: Row(
+                children: [
+                  const SizedBox(width: 22),
+
+                  // INFO
+                  const Icon(Icons.info_outline, color: Colors.white, size: 39),
+
+                  const Spacer(),
+
+                  // MORE
+                  const Icon(Icons.more_vert, color: Colors.white, size: 31),
+
+                  const SizedBox(width: 28),
+                ],
+              ),
             ),
           ),
         ],

@@ -36,29 +36,36 @@ class MovieModel {
   factory MovieModel.fromJson(Map<String, dynamic> json) {
     return MovieModel(
       adult: json['adult'] ?? false,
+
       backdropPath: json['backdrop_path'],
-      genreIds: List<int>.from(json['genre_ids'] ?? []),
+
+      genreIds: (json['genre_ids'] as List<dynamic>? ?? [])
+          .map((e) => e as int)
+          .toList(),
+
       id: json['id'] ?? 0,
+
       originalLanguage: json['original_language'],
+
       originalTitle: json['original_title'] ?? json['original_name'],
+
       overview: json['overview'],
+
       popularity: (json['popularity'] ?? 0).toDouble(),
+
       posterPath: json['poster_path'],
 
-      // Movie uses release_date.
-      // TV uses first_air_date.
       releaseDate: json['release_date'] ?? json['first_air_date'],
 
-      // Movie uses title.
-      // TV uses name.
       title: json['title'] ?? json['name'],
 
       voteAverage: (json['vote_average'] ?? 0).toDouble(),
+
       voteCount: json['vote_count'] ?? 0,
+
       mediaType: json['media_type'],
     );
   }
-
   String? get posterUrl {
     if (posterPath == null || posterPath!.isEmpty) {
       return null;
