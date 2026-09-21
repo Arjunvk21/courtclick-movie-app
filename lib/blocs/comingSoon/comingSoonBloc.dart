@@ -3,15 +3,38 @@ import 'package:courtclick_movie_app/blocs/comingSoon/comingSoonState.dart';
 import 'package:courtclick_movie_app/repository/movieRepository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ComingSoonBloc
-    extends Bloc<ComingSoonEvent, ComingSoonState> {
+class ComingSoonBloc extends Bloc<ComingSoonEvent, ComingSoonState> {
   final MovieRepository movieRepository;
 
-  ComingSoonBloc({
-    required this.movieRepository,
-  }) : super(ComingSoonInitial()) {
+  ComingSoonBloc({required this.movieRepository}) : super(ComingSoonInitial()) {
     on<FetchComingSoonMovies>(_fetchComingSoonMovies);
     on<LoadMoreComingSoonMovies>(_loadMoreComingSoonMovies);
+    on<RefreshComingSoonMovies>(_refreshComingSoonMovies);
+  }
+
+  Future<void> _refreshComingSoonMovies(
+    RefreshComingSoonMovies event,
+    Emitter<ComingSoonState> emit,
+  ) async {
+    try {
+      final response = await movieRepository.getUpcomingMovies(page: 1);
+
+      if (response.results.isEmpty) {
+        emit(ComingSoonEmpty());
+        return;
+      }
+
+      emit(
+        ComingSoonSuccess(
+          movies: response.results,
+          currentPage: response.page,
+          totalPages: response.totalPages,
+          isLoadingMore: false,
+        ),
+      );
+    } catch (e) {
+      emit(ComingSoonError(e.toString()));
+    }
   }
 
   Future<void> _fetchComingSoonMovies(
@@ -21,9 +44,7 @@ class ComingSoonBloc
     emit(ComingSoonLoading());
 
     try {
-      final response = await movieRepository.getUpcomingMovies(
-        page: 1,
-      );
+      final response = await movieRepository.getUpcomingMovies(page: 1);
 
       if (response.results.isEmpty) {
         emit(ComingSoonEmpty());
@@ -38,11 +59,7 @@ class ComingSoonBloc
         ),
       );
     } catch (e) {
-      emit(
-        ComingSoonError(
-          e.toString(),
-        ),
-      );
+      emit(ComingSoonError(e.toString()));
     }
   }
 
@@ -76,14 +93,9 @@ class ComingSoonBloc
     try {
       final nextPage = currentState.currentPage + 1;
 
-      final response = await movieRepository.getUpcomingMovies(
-        page: nextPage,
-      );
+      final response = await movieRepository.getUpcomingMovies(page: nextPage);
 
-      final updatedMovies = [
-        ...currentState.movies,
-        ...response.results,
-      ];
+      final updatedMovies = [...currentState.movies, ...response.results];
 
       emit(
         ComingSoonSuccess(

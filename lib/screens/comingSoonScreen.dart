@@ -313,41 +313,68 @@ class _ComingSoonContent extends StatelessWidget {
   const _ComingSoonContent({required this.movies, required this.isLoadingMore});
 
   @override
+  @override
   Widget build(BuildContext context) {
-    return NotificationListener<ScrollNotification>(
-      onNotification: (notification) {
-        if (notification.metrics.pixels >=
-            notification.metrics.maxScrollExtent - 500) {
-          context.read<ComingSoonBloc>().add(LoadMoreComingSoonMovies());
-        }
+    return RefreshIndicator(
+      color: Colors.white,
+      backgroundColor: Colors.black,
 
-        return false;
+      onRefresh: () async {
+        final bloc = context.read<ComingSoonBloc>();
+
+        bloc.add(RefreshComingSoonMovies());
+
+        await bloc.stream.firstWhere(
+          (state) =>
+              state is ComingSoonSuccess ||
+              state is ComingSoonError ||
+              state is ComingSoonEmpty,
+        );
       },
-      child: ListView.builder(
-        padding: EdgeInsets.zero,
-        itemCount: movies.length + (isLoadingMore ? 1 : 0) + 1,
-        itemBuilder: (context, index) {
-          // Notifications
-          if (index == 0) {
-            return const _ComingSoonNotifications();
+
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (notification) {
+          if (notification.metrics.pixels >=
+              notification.metrics.maxScrollExtent - 500) {
+            context.read<ComingSoonBloc>().add(LoadMoreComingSoonMovies());
           }
 
-          final movieIndex = index - 1;
-
-          if (movieIndex >= movies.length) {
-            return const Padding(
-              padding: EdgeInsets.all(20),
-              child: Center(
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                ),
-              ),
-            );
-          }
-
-          return _ComingSoonCard(movie: movies[movieIndex]);
+          return false;
         },
+
+        child: ListView.builder(
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
+          padding: EdgeInsets.zero,
+
+          itemCount: movies.length + (isLoadingMore ? 1 : 0) + 1,
+
+          itemBuilder: (context, index) {
+            // Notifications
+            if (index == 0) {
+              return const _ComingSoonNotifications();
+            }
+
+            final movieIndex = index - 1;
+
+            // Loading more
+            if (movieIndex >= movies.length) {
+              return const Padding(
+                padding: EdgeInsets.all(20),
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                ),
+              );
+            }
+
+            // Movie
+            return _ComingSoonCard(movie: movies[movieIndex]);
+          },
+        ),
       ),
     );
   }
