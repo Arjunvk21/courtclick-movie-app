@@ -4,6 +4,7 @@ import 'package:courtclick_movie_app/blocs/search/searchEvent.dart';
 import 'package:courtclick_movie_app/blocs/search/searchState.dart';
 import 'package:courtclick_movie_app/core/network/dioClient.dart';
 import 'package:courtclick_movie_app/customWidgets/customBottomNavBar.dart';
+import 'package:courtclick_movie_app/customWidgets/searchSkeleton.dart';
 import 'package:courtclick_movie_app/models/movieModel.dart';
 import 'package:courtclick_movie_app/repository/movieRepository.dart';
 import 'package:flutter/material.dart';
@@ -105,10 +106,6 @@ class _SearchViewState extends State<SearchView> {
         bottom: false,
         child: Column(
           children: [
-            // ============================================
-            // SEARCH BAR
-            // ============================================
-
             Padding(
               padding: const EdgeInsets.only(top: 44),
               child: Container(
@@ -196,16 +193,11 @@ class _SearchViewState extends State<SearchView> {
               ),
             ),
 
-            // ============================================
-            // CONTENT
-            // ============================================
             Expanded(
               child: BlocBuilder<SearchBloc, SearchState>(
                 builder: (context, state) {
                   if (state is SearchLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(color: Colors.white),
-                    );
+                    return const SearchSkeleton(showTopSearches: false);
                   }
 
                   if (state is SearchError) {
@@ -231,9 +223,7 @@ class _SearchViewState extends State<SearchView> {
                   }
 
                   if (_loadingTopSearches) {
-                    return const Center(
-                      child: CircularProgressIndicator(color: Colors.white),
-                    );
+                    return const SearchSkeleton(showTopSearches: true);
                   }
 
                   return _TopSearches(movies: _topSearchMovies ?? []);
@@ -244,9 +234,6 @@ class _SearchViewState extends State<SearchView> {
         ),
       ),
 
-      // ============================================
-      // BOTTOM NAVIGATION
-      // ============================================
       bottomNavigationBar: const CustomBottomNavigation(selectedIndex: 1),
     );
   }

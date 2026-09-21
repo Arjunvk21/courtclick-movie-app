@@ -12,7 +12,6 @@ class ProfileScreen extends StatelessWidget {
       body: SafeArea(
         child: Stack(
           children: [
-            // Netflix logo
             Positioned(
               top: 50,
               left: 0,
@@ -27,14 +26,12 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
 
-            // Edit icon
             Positioned(
               top: 62,
               right: 25,
               child: Icon(Icons.edit, color: Colors.white, size: 22),
             ),
 
-            // Profiles
             Positioned(
               top: 218,
               left: 0,
@@ -152,7 +149,6 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
 
-            // Bottom home indicator
             Positioned(
               bottom: 8,
               left: 0,

@@ -13,10 +13,6 @@ class DownloadsScreen extends StatelessWidget {
         bottom: false,
         child: Column(
           children: [
-            // ==========================================
-            // SMART DOWNLOADS
-            // ==========================================
-
             const Padding(
               padding: EdgeInsets.only(top: 30, left: 30),
               child: Row(
@@ -37,19 +33,12 @@ class DownloadsScreen extends StatelessWidget {
                 ],
               ),
             ),
-
-            // ==========================================
-            // CONTENT
-            // ==========================================
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   children: [
                     const SizedBox(height: 30),
 
-                    // ------------------------------------
-                    // HEADING
-                    // ------------------------------------
                     const Align(
                       alignment: Alignment.centerLeft,
                       child: Padding(
@@ -70,9 +59,6 @@ class DownloadsScreen extends StatelessWidget {
 
                     const SizedBox(height: 14),
 
-                    // ------------------------------------
-                    // DESCRIPTION
-                    // ------------------------------------
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 11),
                       child: Text(
@@ -93,9 +79,6 @@ class DownloadsScreen extends StatelessWidget {
 
                     const SizedBox(height: 18),
 
-                    // ------------------------------------
-                    // CIRCLE
-                    // ------------------------------------
                     Container(
                       width: 177,
                       height: 177,
@@ -107,9 +90,6 @@ class DownloadsScreen extends StatelessWidget {
 
                     const SizedBox(height: 16),
 
-                    // ------------------------------------
-                    // SETUP BUTTON
-                    // ------------------------------------
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 11),
                       child: SizedBox(
@@ -144,9 +124,6 @@ class DownloadsScreen extends StatelessWidget {
 
                     const SizedBox(height: 50),
 
-                    // ------------------------------------
-                    // FIND SOMETHING TO DOWNLOAD
-                    // ------------------------------------
                     Container(
                       width: 239,
                       height: 33,
@@ -176,9 +153,6 @@ class DownloadsScreen extends StatelessWidget {
         ),
       ),
 
-      // ==========================================
-      // BOTTOM NAVIGATION
-      // ==========================================
       bottomNavigationBar: const CustomBottomNavigation(selectedIndex: 3),
     );
   }

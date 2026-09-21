@@ -3,6 +3,7 @@ import 'package:courtclick_movie_app/blocs/comingSoon/comingSoonBloc.dart';
 import 'package:courtclick_movie_app/blocs/comingSoon/comingSoonEvent.dart';
 import 'package:courtclick_movie_app/blocs/comingSoon/comingSoonState.dart';
 import 'package:courtclick_movie_app/core/network/dioClient.dart';
+import 'package:courtclick_movie_app/customWidgets/comingSoonSkeleton.dart';
 import 'package:courtclick_movie_app/customWidgets/customBottomNavBar.dart';
 import 'package:courtclick_movie_app/models/movieModel.dart';
 import 'package:courtclick_movie_app/repository/movieRepository.dart';
@@ -35,7 +36,6 @@ class ComingSoonView extends StatelessWidget {
         bottom: false,
         child: Column(
           children: [
-            // PAGE TITLE
             const Align(
               alignment: Alignment.centerLeft,
               child: Padding(
@@ -56,9 +56,7 @@ class ComingSoonView extends StatelessWidget {
               child: BlocBuilder<ComingSoonBloc, ComingSoonState>(
                 builder: (context, state) {
                   if (state is ComingSoonLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(color: Colors.white),
-                    );
+                    return const ComingSoonSkeleton();
                   }
 
                   if (state is ComingSoonError) {
@@ -107,10 +105,6 @@ class _ComingSoonNotifications extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ==========================================
-        // NOTIFICATIONS TITLE - OUTSIDE CONTAINER
-        // ==========================================
-
         Padding(
           padding: const EdgeInsets.only(left: 20, top: 10, bottom: 16),
           child: Row(
@@ -144,9 +138,6 @@ class _ComingSoonNotifications extends StatelessWidget {
           ),
         ),
 
-        // ==========================================
-        // NOTIFICATION LIST CONTAINER
-        // ==========================================
         Container(
           width: double.infinity,
           color: const Color(0xFF464646),
@@ -421,9 +412,6 @@ class _ComingSoonCard extends StatelessWidget {
                 : Container(color: const Color(0xFF222222)),
           ),
 
-          // ==========================================
-          // REMIND ME / SHARE
-          // ==========================================
           SizedBox(
             height: 78,
             child: Row(
@@ -448,9 +436,6 @@ class _ComingSoonCard extends StatelessWidget {
             ),
           ),
 
-          // ==========================================
-          // RELEASE DATE
-          // ==========================================
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: Text(
@@ -466,9 +451,6 @@ class _ComingSoonCard extends StatelessWidget {
 
           const SizedBox(height: 10),
 
-          // ==========================================
-          // TITLE
-          // ==========================================
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: Text(
@@ -488,9 +470,6 @@ class _ComingSoonCard extends StatelessWidget {
 
           const SizedBox(height: 7),
 
-          // ==========================================
-          // DESCRIPTION
-          // ==========================================
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: Text(
@@ -510,9 +489,6 @@ class _ComingSoonCard extends StatelessWidget {
 
           const SizedBox(height: 9),
 
-          // ==========================================
-          // GENRES
-          // ==========================================
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 15),
             child: Text(

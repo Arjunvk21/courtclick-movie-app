@@ -19,25 +19,11 @@ class MoreScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     SizedBox(height: 30),
-                    // ==========================================
-                    // PROFILES SECTION
-                    // ==========================================
 
                     _ProfilesSection(),
-
-                    // ==========================================
-                    // TELL FRIENDS
-                    // ==========================================
                     _TellFriendsSection(),
 
-                    // ==========================================
-                    // MY LIST
-                    // ==========================================
                     _MyListSection(),
-
-                    // ==========================================
-                    // SETTINGS
-                    // ==========================================
                     _SettingsSection(),
                   ],
                 ),
@@ -223,7 +209,6 @@ class _TellFriendsSection extends StatelessWidget {
         children: [
           const SizedBox(height: 23),
 
-          // TITLE
           Row(
             children: [
               const Icon(
@@ -250,7 +235,6 @@ class _TellFriendsSection extends StatelessWidget {
 
           const SizedBox(height: 13),
 
-          // DESCRIPTION
           const Text(
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
             'Sit quam dui, vivamus bibendum ut. A morbi mi tortor ut '
@@ -268,7 +252,6 @@ class _TellFriendsSection extends StatelessWidget {
 
           const SizedBox(height: 10),
 
-          // TERMS
           const Text(
             'Terms & Conditions',
             style: TextStyle(
@@ -284,7 +267,6 @@ class _TellFriendsSection extends StatelessWidget {
 
           const SizedBox(height: 13),
 
-          // INPUT + COPY LINK
           Row(
             children: [
               Expanded(child: Container(height: 37, color: Colors.black)),
@@ -365,7 +347,7 @@ class _SocialRow extends StatelessWidget {
 
           const _SocialDivider(),
 
-          Expanded(child: _MoreSocialButton()),
+          Expanded(child: Center(child: _MoreSocialButton())),
         ],
       ),
     );
@@ -377,25 +359,27 @@ class _MoreSocialButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SizedBox(
-        width: 50,
-        height: 54,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.more_horiz, color: Colors.white, size: 30),
-            const SizedBox(height: 1),
-            const Text(
-              'More',
-              style: TextStyle(
-                fontFamily: 'SF Pro Display',
-                fontSize: 16,
-                color: Colors.white,
-              ),
+    return SizedBox(
+      width: 50,
+      height: 54,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.more_horiz, color: Colors.white, size: 22),
+
+          const SizedBox(height: 3),
+
+          const Text(
+            'More',
+            style: TextStyle(
+              fontFamily: 'SF Pro Display',
+              fontWeight: FontWeight.w400,
+              fontSize: 12,
+              height: 14 / 12,
+              color: Colors.white,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -408,38 +392,16 @@ class _SocialIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SizedBox(
-        width: 33,
-        height: 33,
-        child: SvgPicture.asset(asset, fit: BoxFit.contain),
-      ),
-    );
-  }
-}
-
-class _SocialItem extends StatelessWidget {
-  final IconData icon;
-  final Color backgroundColor;
-  final Color iconColor;
-
-  const _SocialItem({
-    required this.icon,
-    required this.backgroundColor,
-    this.iconColor = Colors.white,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        width: 36,
-        height: 34,
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.circular(8),
+    return SizedBox(
+      width: 36,
+      height: 36,
+      child: Center(
+        child: SvgPicture.asset(
+          asset,
+          width: 28,
+          height: 28,
+          fit: BoxFit.contain,
         ),
-        child: Icon(icon, color: iconColor, size: 25),
       ),
     );
   }
@@ -450,7 +412,7 @@ class _SocialDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(width: 1, height: 53, color: const Color(0xFF777777));
+    return Container(width: 1, height: 30, color: const Color(0xFF777777));
   }
 }
 

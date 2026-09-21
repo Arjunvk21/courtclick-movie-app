@@ -4,6 +4,7 @@ import 'package:courtclick_movie_app/blocs/dashboard/dashboardEvent.dart';
 import 'package:courtclick_movie_app/blocs/dashboard/dashboardState.dart';
 import 'package:courtclick_movie_app/core/network/dioClient.dart';
 import 'package:courtclick_movie_app/customWidgets/customBottomNavBar.dart';
+import 'package:courtclick_movie_app/customWidgets/dashboardSkeleton.dart';
 import 'package:courtclick_movie_app/models/movieModel.dart';
 import 'package:courtclick_movie_app/repository/movieRepository.dart';
 import 'package:courtclick_movie_app/screens/searchScreen.dart';
@@ -44,9 +45,7 @@ class _DashboardViewState extends State<DashboardView> {
       body: BlocBuilder<DashboardBloc, DashboardState>(
         builder: (context, state) {
           if (state is DashboardInitial || state is DashboardLoading) {
-            return const Center(
-              child: CircularProgressIndicator(color: Colors.white),
-            );
+            return const DashboardSkeleton();
           }
 
           if (state is DashboardError) {
@@ -126,28 +125,18 @@ class _HomeContent extends StatelessWidget {
           //     ),
           //   ),
           // ),
-
-          // =========================
-          // HERO
-          // =========================
           if (heroMovie != null) ...[
             SliverToBoxAdapter(child: HeroMovie(movie: heroMovie)),
 
             const SliverToBoxAdapter(child: HeroActions()),
           ],
 
-          // =========================
-          // PREVIEWS
-          // =========================
           SliverToBoxAdapter(
             child: PreviewSection(
               movies: state.trendingMovies.take(5).toList(),
             ),
           ),
 
-          // =========================
-          // CONTINUE WATCHING
-          // =========================
           SliverToBoxAdapter(
             child: MovieSection(
               title: 'Continue Watching for Emanalo',
@@ -157,9 +146,6 @@ class _HomeContent extends StatelessWidget {
             ),
           ),
 
-          // =========================
-          // POPULAR
-          // =========================
           SliverToBoxAdapter(
             child: MovieSection(
               title: 'Popular on Netflix',
@@ -173,9 +159,6 @@ class _HomeContent extends StatelessWidget {
             ),
           ),
 
-          // =========================
-          // TRENDING
-          // =========================
           SliverToBoxAdapter(
             child: MovieSection(
               title: 'Trending Now',
@@ -189,9 +172,6 @@ class _HomeContent extends StatelessWidget {
             ),
           ),
 
-          // =========================
-          // TOP 10
-          // =========================
           SliverToBoxAdapter(
             child: MovieSection(
               title: 'Top 10 in Nigeria Today',
@@ -206,9 +186,6 @@ class _HomeContent extends StatelessWidget {
             ),
           ),
 
-          // =========================
-          // MY LIST
-          // =========================
           SliverToBoxAdapter(
             child: MovieSection(
               title: 'My List',
@@ -218,9 +195,6 @@ class _HomeContent extends StatelessWidget {
             ),
           ),
 
-          // =========================
-          // AFRICAN MOVIES
-          // =========================
           SliverToBoxAdapter(
             child: MovieSection(
               title: 'African Movies',
@@ -323,15 +297,6 @@ class HeroMovie extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.hardEdge,
         children: [
-          // =========================================================
-          // HERO IMAGE
-          // Figma:
-          // Width  = 424.0463
-          // Height = 415
-          // Left   = -24.52
-          // Top    = 0
-          // =========================================================
-
           Positioned(
             top: 0,
             left: -24.52,
@@ -351,9 +316,6 @@ class HeroMovie extends StatelessWidget {
                 : Container(color: const Color(0xFF151515)),
           ),
 
-          // =========================================================
-          // DARK GRADIENT
-          // =========================================================
           Positioned.fill(
             child: Container(
               decoration: const BoxDecoration(
@@ -372,12 +334,6 @@ class HeroMovie extends StatelessWidget {
             ),
           ),
 
-          // =========================================================
-          // HOME
-          // =========================================================
-          // =========================================================
-          // TOP NAVIGATION - SINGLE ROW
-          // =========================================================
           Positioned(
             top: 35,
             left: 3,
@@ -588,10 +544,6 @@ class PreviewSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // =========================
-          // TITLE
-          // =========================
-
           const Padding(
             padding: EdgeInsets.only(left: 16),
             child: Text(
@@ -610,9 +562,6 @@ class PreviewSection extends StatelessWidget {
 
           const SizedBox(height: 27),
 
-          // =========================
-          // PREVIEW LIST
-          // =========================
           SizedBox(
             height: 102,
             child: ListView.builder(
@@ -1061,10 +1010,6 @@ class LastWatchedCard extends StatelessWidget {
       clipBehavior: Clip.hardEdge,
       child: Column(
         children: [
-          // =========================
-          // POSTER / IMAGE
-          // =========================
-
           SizedBox(
             width: 187,
             height: 88,
@@ -1080,9 +1025,6 @@ class LastWatchedCard extends StatelessWidget {
                 : Container(color: const Color(0xFF202020)),
           ),
 
-          // =========================
-          // BOTTOM ACTION AREA
-          // =========================
           Expanded(
             child: Container(
               color: const Color(0xFF111111),
